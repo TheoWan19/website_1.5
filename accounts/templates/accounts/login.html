@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+{% block title %}Login{% endblock %}
+{% load crispy_forms_tags %}
+{% block main %}
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-3"></div>
+			<div class="col-6">
+						<h1>Login</h1>
+			    <form action="{% url 'login' %}" method="POST">
+			        {% csrf_token %}
+			        {{ form|crispy }}
+			        <input type="submit" value="Login">
+			    </form>
+			    <p>Not yet registered!</p>
+			    <a href="{% url 'student-signup' %}">Signup as Student</a><br>
+			    <a href="{% url 'teacher-signup' %}">Signup as Teacher</a>
+			</div>
+			<div class="col-3"></div>
+		</div>
+	</div>
+	
+{% endblock %}

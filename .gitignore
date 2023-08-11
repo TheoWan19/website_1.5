@@ -1,0 +1,4 @@
+pyenv
+__pycache
+__pycache__
+db.sqlite
