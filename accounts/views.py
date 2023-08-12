@@ -15,6 +15,7 @@ from . models import User
 from . forms import RegistrationForm, ProfileForm, CustomerSignUpForm, EmployeeSignUpForm, LoginForm
 from . decorators import customer_required, employee_required, admin_required
 from codes.forms import CodeForm
+from . utils import send_sms
 
 # Create your views here.
 
@@ -124,8 +125,6 @@ def login_view(request):
 		password = request.POST['password']
 		user = authenticate(request, email=email, password=password)
 		if user is not None:
-			# send one time password
-			
 			request.session['pk'] = user.pk
 			return redirect('verify')
 		else:
@@ -154,8 +153,8 @@ def verify_view(request):
 		code = user.code
 		code_user = f'{user.email}: {code}'
 		if not request.POST:
-			#send sms code here
 			print(code_user)
+			send_sms(code_user, user.mobile)
 		if form.is_valid():
 			num = form.cleaned_data.get('number')	
 
