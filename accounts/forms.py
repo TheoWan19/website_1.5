@@ -81,11 +81,11 @@ class CustomerSignUpForm(UserCreationForm):
 	avatar = forms.ImageField()
 	location = forms.CharField(widget=forms.TextInput())
 	is_customer = forms.BooleanField()
-	#is_employee = forms.BooleanField()	
+	is_employee = forms.BooleanField()	
 
 	class Meta:
 		model = User
-		fields = ('email', 'name', 'mobile', 'date_birth', 'first_name', 'last_name', 'gender', 'avatar', 'location', 'is_customer', 'password1', 'password2')
+		fields = ('email', 'name', 'mobile', 'date_birth', 'first_name', 'last_name', 'gender', 'avatar', 'location', 'is_customer', 'is_employee', 'password1', 'password2')
 		widgets = {
 			'date_birth': forms.DateInput(attrs={'type': 'date'}),
 			'mobile': PhoneNumberPrefixWidget(initial='US'),

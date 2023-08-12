@@ -2,19 +2,39 @@
 {% block title %}Login{% endblock %}
 {% load crispy_forms_tags %}
 {% block main %}
+
+	{% if error_message %}
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		  <strong>{{ error_message }}</strong>
+		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	{% endif %}
+
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-3"></div>
-			<div class="col-6">
-						<h1>Login</h1>
-			    <form action="{% url 'login' %}" method="POST">
+			<div class="col-6 text-blue">
+				<br>
+						<h1><stron>Login</stron></h1>
+				<br>		
+			    <form method="POST" autocomplete="off" class="form-control">
 			        {% csrf_token %}
-			        {{ form|crispy }}
-			        <input type="submit" value="Login">
+			        <div><label for='email'>Email Address</label></div>
+			        <div>
+			        	<input type="text" name="email">
+			        </div>
+			        <div><label for='password'>Passord</label></div>
+			        <div>
+			        	<input type="password" name="password">
+			        </div>
+			       <div>
+			       	<button type="submit" class="btn btn-primary mt-3">Login</button>
+			       </div>
+			        
+			 
 			    </form>
 			    <p>Not yet registered!</p>
-			    <a href="{% url 'student-signup' %}">Signup as Student</a><br>
-			    <a href="{% url 'teacher-signup' %}">Signup as Teacher</a>
+			    <a href="{% url 'customer-signup' %}" class="btn btn-secondary">Signup as Customer</a><br>
 			</div>
 			<div class="col-3"></div>
 		</div>

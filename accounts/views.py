@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth import login 
+from django.contrib.auth import login, authenticate 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import views as auth_views
 from django import forms
 
@@ -13,6 +14,7 @@ from django.urls import reverse
 from . models import User
 from . forms import RegistrationForm, ProfileForm, CustomerSignUpForm, EmployeeSignUpForm, LoginForm
 from . decorators import customer_required, employee_required, admin_required
+from codes.forms import CodeForm
 
 # Create your views here.
 
@@ -62,7 +64,7 @@ class EmployeeSignUpView(CreateView):
 		login(self.request, user)
 		return redirect('employee-home')
 
-
+'''
 class LoginView(auth_views.LoginView):
 	form_class = LoginForm
 	template_name = 'accounts/login.html'
@@ -80,7 +82,8 @@ class LoginView(auth_views.LoginView):
 			elif user.is_superuser:
 				return reverse('admin-home')	
 		else:
-			return reverse('login')		
+			return reverse('login')	
+'''				
 
 		
 class ProfileView(UpdateView):
@@ -111,4 +114,63 @@ def employee_home(request):
 @admin_required
 def admin_home(request):
 	context = {}
-	return render(request, 'accounts/admin_home.html', context)		
+	return render(request, 'accounts/admin_home.html', context)	
+
+
+def login_view(request):
+	error_message = None
+	if request.method == 'POST':
+		email = request.POST['email']
+		password = request.POST['password']
+		user = authenticate(request, email=email, password=password)
+		if user is not None:
+			# send one time password
+			
+			request.session['pk'] = user.pk
+			return redirect('verify')
+		else:
+			error_message = 'Invalid email or password'	
+	return render(request, 'accounts/login.html', {'error_message': error_message})	
+	
+	
+'''
+def auth_view(request):
+	error_message = None
+	if request.method == 'POST':
+		email = request.POST['email']
+		password = request.POST['password']
+		user = authenticate(request, email=email, password=password)
+		if user is not None:
+			request.session['pk'] = user.pk
+			return redirect('verify')
+	return render(request, 'accounts/auth.html')
+'''
+
+def verify_view(request):
+	form = CodeForm(request.POST or None)
+	pk = request.session.get('pk')
+	if pk:
+		user = User.objects.get(pk=pk)
+		code = user.code
+		code_user = f'{user.email}: {code}'
+		if not request.POST:
+			#send sms code here
+			print(code_user)
+		if form.is_valid():
+			num = form.cleaned_data.get('number')	
+
+			if str(code) == num:
+				code.save()
+				login(request, user)
+				return redirect('main')
+			else:
+				return redirect('login')	
+	return render(request, 'accounts/verify.html', {'form': form})			
+
+@login_required
+@admin_required	
+@employee_required
+@customer_required
+def main_view(request):	
+	return redirect('main')		
+

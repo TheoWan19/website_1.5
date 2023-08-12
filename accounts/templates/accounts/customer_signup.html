@@ -9,7 +9,7 @@
 			<div class="col-6">
 						<br>
 						<h1>Customer Signup</h1>
-			    <form action="{% url 'customer-signup' %}" method="POST" class="form-control">
+			    <form action="{% url 'customer-signup' %}" method="POST" class="form-control" autocomplete="off" enctype="multipart/form-data">
 			        {% csrf_token %}
 			        {{ form|crispy }}
 			        <input type="submit" value="Signup" class="btn btn-primary">

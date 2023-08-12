@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 	def get_full_name(self):
-		return f'{self.first_name }{self.last_name}'.title()
+		return f'{self.first_name }'+' '+ f'{self.last_name}'.title()
 
 	def get_short_name(self):
 		return self.name.split()[0]	
@@ -49,7 +49,10 @@ class Customer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='customer')
 	location = models.CharField(max_length=150)
 	is_customer = models.BooleanField(default=True)
-	is_employee = models.BooleanField(default=True)	
+	is_employee = models.BooleanField(default=False)
+
+	def __str__(self):
+		return str(self.user.get_full_name())	
 
 
 class Employee(models.Model):
